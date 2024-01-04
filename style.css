@@ -6,22 +6,38 @@ body {
 }
 
 #main {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  width: 15em;
+  width: 20em;
   height: 25em;
   border: 3px solid black;
   border-radius: 10px;
 }
 
+#topContent {
+  flex: 1;
+}
+
 table {
-  width: 15em;
-  height: 15em;
+  width: auto;
+  height: auto;
+  margin: 3.5px 0;
 }
 
 .inputs {
-  width: 4em;
-  height: 2em;
-  background-color: blue;
+  text-align: center;
+  width: 4.6em;
+  height: 3em;
+  border-radius: 4px;
+  background-color: lightgray;
 }
 
-.inputs#zero {}
+.inputs.symbols {
+  background-color: orange;
+}
+
+.inputs#clear {
+  background-color: darkgray;
+}
