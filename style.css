@@ -18,6 +18,13 @@ body {
 
 #topContent {
   flex: 1;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+#showMath {
+  text-align: end;
 }
 
 table {
