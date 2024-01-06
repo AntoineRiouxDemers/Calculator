@@ -4,64 +4,100 @@ const answer = document.getElementById('showMath');
 let currentNumber = 0;
 let firstNumber = null;
 let secondNumber = null;
-let currentAnswer = 0;
 let currentOperator = "add";
+let wasEquals = false;
 
 inputs.forEach(input => input.addEventListener('click', () => readInput(input)));
 
 function readInput(input) {
   (input.classList.contains('numbers')) ? isANumber(input) :
-    (input.classList.contains('operators')) ? isAnOperator(input) : clearCalculator();
+    (input.classList.contains('operators')) ? isAnOperator(input) :
+      (input.classList.contains('negative')) ? toNegativePositive() :
+        (input.classList.contains("percentage")) ? toPercentage() : clearCalculator();
+}
+
+function toPercentage() {
+  currentNumber = currentNumber / 100;
+  answer.textContent = currentNumber;
+}
+
+function toNegativePositive() {
+  if (currentNumber.toString().includes("-")) {
+    currentNumber = currentNumber.toString().slice(1);
+  } else {
+    currentNumber = "-" + currentNumber.toString();
+  }
+  answer.textContent = currentNumber;
 }
 
 function isANumber(input) {
   console.log(input.id);
-  (currentNumber == 0 && firstNumber == null || currentNumber == 0 && firstNumber!=null) ? currentNumber = input.textContent : currentNumber += input.textContent;
+  currentNumber += input.textContent;
+  if (currentNumber.toString().includes(".") == false && currentNumber.toString().charAt(0) == "0") {
+    currentNumber = currentNumber.toString().slice(1);
+  } else if (currentNumber.toString().includes("-") && currentNumber.toString().includes(".") == false && currentNumber.toString().charAt(1) == "0") {
+    currentNumber = currentNumber.toString().slice(0, 1) + currentNumber.toString().slice(2);
+  }
   answer.textContent = currentNumber;
 }
 
 function isAnOperator(input) {
 
-  if(firstNumber == null) {
+  if (firstNumber == null) {
     firstNumber = currentNumber;
     currentOperator = input.id;
-  } else {
+  } else if (secondNumber == null) {
     secondNumber = currentNumber;
-    answer.textContent = "";
   }
   currentNumber = 0;
-  
-  if(secondNumber != null) {
-    currentAnswer = calculate(currentOperator);
-    answer.textContent = currentAnswer;
 
-    firstNumber = currentAnswer;
+  if (secondNumber != null && wasEquals == false) {
+    firstNumber = calculate(currentOperator);
+    answer.textContent = firstNumber;
+
+    if (input.id != "equals") {
+      currentOperator = input.id;
+      secondNumber = null;
+    } else {
+      wasEquals = true;
+    }
+  } else if (input.id != "equals") {
     secondNumber = null;
-  } 
+    wasEquals = false;
+    currentOperator = input.id;
+  } else {
+    firstNumber = calculate(currentOperator);
+    answer.textContent = firstNumber;
+  }
 }
 
-function calculate(operator){
+function calculate(operator) {
   let answer = 0;
-  
-  switch(operator){
-    case "add" :
+
+  switch (operator) {
+    case "add":
       answer = Number(firstNumber) + Number(secondNumber);
       console.log("add");
-    break; 
+      break;
 
     case "substract":
       answer = Number(firstNumber) - Number(secondNumber);
       console.log("substract");
-    break;
+      break;
 
     case "multiply":
       answer = Number(firstNumber) * Number(secondNumber);
       console.log("multiply");
-    break;
+      break;
 
     case "divide":
       answer = Number(firstNumber) / Number(secondNumber);
-    break;
+      console.log("divide");
+      break;
+
+    default:
+      console.log("trouble");
+      break;
   }
   return answer;
 }
