@@ -2,6 +2,7 @@ const inputs = document.querySelectorAll('.inputs');
 const nine = document.getElementById('nine');
 const answer = document.getElementById('showMath');
 let currentNumber = 0;
+let saveNumber = 0;
 let firstNumber = null;
 let secondNumber = null;
 let currentOperator = "add";
@@ -17,17 +18,33 @@ function readInput(input) {
 }
 
 function toPercentage() {
-  currentNumber = currentNumber / 100;
-  answer.textContent = currentNumber;
+  if (currentNumber > 0) {
+    currentNumber = currentNumber / 100;
+    answer.textContent = currentNumber;
+  } else {
+    currentNumber = saveNumber /100
+    answer.textContent = currentNumber;
+    firstNumber = currentNumber;
+  }
 }
 
 function toNegativePositive() {
-  if (currentNumber.toString().includes("-")) {
-    currentNumber = currentNumber.toString().slice(1);
+  if(currentNumber > 0) {
+    if (currentNumber.toString().includes("-")) {
+      currentNumber = currentNumber.toString().slice(1);
+    } else {
+      currentNumber = "-" + currentNumber.toString();
+    }
+    answer.textContent = currentNumber;
   } else {
-    currentNumber = "-" + currentNumber.toString();
+    if (saveNumber.toString().includes("-")) {
+      currentNumber = saveNumber.toString().slice(1);
+    } else {
+      currentNumber = "-" + saveNumber.toString();
+    }
+    firstNumber = currentNumber;
+    answer.textContent = currentNumber;
   }
-  answer.textContent = currentNumber;
 }
 
 function isANumber(input) {
@@ -49,7 +66,6 @@ function isAnOperator(input) {
   } else if (secondNumber == null) {
     secondNumber = currentNumber;
   }
-  currentNumber = 0;
 
   if (secondNumber != null && wasEquals == false) {
     firstNumber = calculate(currentOperator);
@@ -69,6 +85,9 @@ function isAnOperator(input) {
     firstNumber = calculate(currentOperator);
     answer.textContent = firstNumber;
   }
+
+  saveNumber = firstNumber;
+  currentNumber = 0;
 }
 
 function calculate(operator) {
