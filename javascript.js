@@ -11,31 +11,36 @@ let wasEquals = false;
 inputs.forEach(input => input.addEventListener('click', () => readInput(input)));
 
 function readInput(input) {
+  document.getElementById("clear").textContent = "C";
   (input.classList.contains('numbers')) ? isANumber(input) :
     (input.classList.contains('operators')) ? isAnOperator(input) :
       (input.classList.contains('negative')) ? toNegativePositive() :
         (input.classList.contains("percentage")) ? toPercentage() : clearCalculator();
 }
 
+function setAnswer(number) {
+  answer.textContent = +parseFloat(number).toFixed(4);
+}
+
 function toPercentage() {
   if (currentNumber > 0) {
     currentNumber = currentNumber / 100;
-    answer.textContent = currentNumber;
+    setAnswer(currentNumber);
   } else {
-    currentNumber = saveNumber /100
+    currentNumber = saveNumber / 100
     answer.textContent = currentNumber;
     firstNumber = currentNumber;
   }
 }
 
 function toNegativePositive() {
-  if(currentNumber > 0) {
+  if (currentNumber > 0) {
     if (currentNumber.toString().includes("-")) {
       currentNumber = currentNumber.toString().slice(1);
     } else {
       currentNumber = "-" + currentNumber.toString();
     }
-    answer.textContent = currentNumber;
+    setAnswer(currentNumber);
   } else {
     if (saveNumber.toString().includes("-")) {
       currentNumber = saveNumber.toString().slice(1);
@@ -43,19 +48,20 @@ function toNegativePositive() {
       currentNumber = "-" + saveNumber.toString();
     }
     firstNumber = currentNumber;
-    answer.textContent = currentNumber;
+    setAnswer(currentNumber);
   }
 }
 
 function isANumber(input) {
   console.log(input.id);
-  currentNumber += input.textContent;
+
+  (input.textContent == "." && currentNumber.toString().includes(".")) ? null : currentNumber += input.textContent;
   if (currentNumber.toString().includes(".") == false && currentNumber.toString().charAt(0) == "0") {
     currentNumber = currentNumber.toString().slice(1);
   } else if (currentNumber.toString().includes("-") && currentNumber.toString().includes(".") == false && currentNumber.toString().charAt(1) == "0") {
     currentNumber = currentNumber.toString().slice(0, 1) + currentNumber.toString().slice(2);
   }
-  answer.textContent = currentNumber;
+  setAnswer(currentNumber);
 }
 
 function isAnOperator(input) {
@@ -69,7 +75,7 @@ function isAnOperator(input) {
 
   if (secondNumber != null && wasEquals == false) {
     firstNumber = calculate(currentOperator);
-    answer.textContent = firstNumber;
+    setAnswer(firstNumber);
 
     if (input.id != "equals") {
       currentOperator = input.id;
@@ -83,7 +89,7 @@ function isAnOperator(input) {
     currentOperator = input.id;
   } else {
     firstNumber = calculate(currentOperator);
-    answer.textContent = firstNumber;
+    setAnswer(firstNumber);
   }
 
   saveNumber = firstNumber;
@@ -122,9 +128,11 @@ function calculate(operator) {
 }
 
 function clearCalculator() {
+  document.getElementById("clear").textContent = "AC";
   console.log('clear');
   currentNumber = 0;
   currentAnswer = 0;
+  saveNumber = 0;
   firstNumber = null;
   secondNumber = null;
   currentOperator = "add";
